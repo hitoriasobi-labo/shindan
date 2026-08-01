@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>直感カルテ診断</title>
+<meta name="description" content="8つの質問に直感で答えるだけ。あなたの無意識が持つ世界観をAIが言語化します。">
+<meta property="og:title" content="直感カルテ診断">
+<meta property="og:description" content="8問の直感診断であなたの無意識の世界観を言語化。全8タイプ。">
+<meta property="og:type" content="website">
+<style>
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+  @keyframes barGrow { from { width: 0; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  :root {
+    --bg: #f6f1e9;
+    --surface: #ede7db;
+    --ink: #1c2033;
+    --ink2: #4e5267;
+    --ink3: #8a8d9e;
+    --accent: #c7a24e;
+    --accent2: #8b3a4a;
+    --accent3: #6a8f5a;
+    --border: rgba(28,32,51,0.09);
+    --card-sh: 0 2px 8px rgba(28,32,51,0.06);
+    --btn-bg: #1c2033;
+    --btn-fg: #f6f1e9;
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --bg:#0e1118;--surface:#181c2a;--ink:#e5e1d8;--ink2:#a9a49a;--ink3:#706b60;
+    --accent:#d4b46a;--accent2:#c46070;--accent3:#8fa87a;
+    --border:rgba(229,225,216,0.07);--card-sh:0 2px 8px rgba(0,0,0,0.3);
+    --btn-bg:#e5e1d8;--btn-fg:#0e1118;
+  }}
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--ink);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;}
+
+  .app{max-width:420px;margin:0 auto;padding:20px 16px 60px;min-height:100vh;display:flex;flex-direction:column;}
+
+  .screen{display:none;animation:fadeIn .4s ease;}
+  .screen.active{display:flex;flex-direction:column;flex:1;}
+
+  .start-hero{text-align:center;padding:48px 0 32px;flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .start-icon{font-size:48px;margin-bottom:16px;}
+  .start-title{font-family:Georgia,'Times New Roman',serif;font-size:28px;letter-spacing:.08em;margin-bottom:8px;}
+  .start-sub{color:var(--ink2);font-size:13px;margin-bottom:32px;line-height:1.7;}
+  .start-note{font-size:11px;color:var(--ink3);margin-top:24px;}
+
+  .btn{display:block;width:100%;padding:14px;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;}
+  .btn-primary{background:var(--btn-bg);color:var(--btn-fg);}
+  .btn-primary:hover{opacity:.85;}
+  .btn-outline{background:transparent;color:var(--ink);border:1px solid var(--border);margin-top:8px;}
+  .btn-outline:hover{background:var(--surface);}
+
+  .q-progress{display:flex;gap:4px;margin-bottom:24px;}
+  .q-dot{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s;}
+  .q-dot.done{background:var(--accent);}
+  .q-dot.current{background:var(--accent);animation:pulse 1.5s infinite;}
+
+  .q-num{font-size:11px;letter-spacing:.15em;color:var(--accent);margin-bottom:8px;}
+  .q-text{font-family:Georgia,'Times New Roman',serif;font-size:19px;margin-bottom:24px;line-height:1.5;}
+
+  .choices{display:flex;flex-direction:column;gap:10px;}
+  .choice{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;cursor:pointer;transition:all .15s;text-align:left;font-size:14px;color:var(--ink2);line-height:1.5;}
+  .choice:hover{border-color:var(--accent);color:var(--ink);}
+  .choice .ch-label{font-weight:600;color:var(--ink);display:block;margin-bottom:2px;}
+
+  .result{animation:slideUp .6s ease;}
+  .r-header{text-align:center;padding:32px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px;}
+  .r-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+  .r-type{font-family:Georgia,'Times New Roman',serif;font-size:24px;margin-bottom:8px;letter-spacing:.04em;}
+  .r-subtitle{color:var(--ink2);font-size:13px;}
+
+  .r-section{margin-bottom:24px;}
+  .r-section-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+  .r-text{color:var(--ink2);font-size:14px;line-height:1.7;}
+
+  .r-meters{margin:8px 0 16px;}
+  .r-meter{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .r-meter-label{font-size:12px;color:var(--ink3);width:64px;text-align:right;flex-shrink:0;}
+  .r-meter-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+  .r-meter-fill{height:100%;border-radius:3px;animation:barGrow .8s ease;}
+
+  .r-tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+  .r-tag{font-size:11px;padding:3px 10px;border-radius:100px;border:1px solid var(--border);color:var(--ink3);}
+  .r-tag.hl{border-color:var(--accent);color:var(--accent);}
+
+  .r-quote{border-left:2px solid var(--accent);padding:10px 0 10px 16px;margin:16px 0;font-family:Georgia,'Times New Roman',serif;font-style:italic;color:var(--ink2);font-size:14px;line-height:1.7;}
+
+  .r-verdict{background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:24px;text-align:center;margin:24px 0;}
+  .r-verdict-title{font-family:Georgia,'Times New Roman',serif;font-size:18px;margin-bottom:8px;}
+  .r-verdict-text{font-size:13px;color:var(--ink2);line-height:1.7;}
+
+  .r-share{text-align:center;margin:24px 0 16px;}
+  .r-share-text{font-size:12px;color:var(--ink3);margin-bottom:8px;}
+
+  .r-credit{text-align:center;font-size:11px;color:var(--ink3);margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="screen active" id="screen-start">
+    <div class="start-hero">
+      <div class="start-icon">&#x1F3AF;</div>
+      <div class="start-title">直感カルテ診断</div>
+      <div class="start-sub">8つの質問に直感で答えるだけ。<br>あなたの無意識が持つ「世界観」を<br>AIが言語化します。</div>
+      <button class="btn btn-primary" onclick="startQuiz()">診断スタート</button>
+      <div class="start-note">所要時間: 約2分 / 全8問</div>
+    </div>
+  </div>
+  <div class="screen" id="screen-q">
+    <div class="q-progress" id="progress"></div>
+    <div class="q-num" id="q-num"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="choices" id="choices"></div>
+  </div>
+  <div class="screen" id="screen-result">
+    <div id="result-content"></div>
+  </div>
+</div>
+<script>
+const Q=[{q:"休日の朝、予定がない。最初にすることは？",opts:[{text:"スマホでニュースや動画を延々と見る",scores:{think:2,solo:2}},{text:"とりあえず外に出て歩く",scores:{action:2,free:2}},{text:"溜まってた本や映画を消化する",scores:{think:2,craft:1}},{text:"友達にLINEしてごはんの約束をする",scores:{social:2,action:1}}]},{q:"旅行するなら、どのスタイルが近い？",opts:[{text:"LCCで弾丸、ノープラン現地調達",scores:{free:3,action:1}},{text:"テーマを決めて徹底リサーチ",scores:{think:2,craft:2}},{text:"仲間とワイワイ、行き先は任せる",scores:{social:3}},{text:"一人で知らない街を歩き回る",scores:{solo:2,free:2}}]},{q:"音楽を聴くとき、何に一番惹かれる？",opts:[{text:"歌詞の言葉選びやストーリー",scores:{think:2,craft:1}},{text:"ビートやリズムの気持ちよさ",scores:{action:2,free:1}},{text:"ボーカルの声や感情表現",scores:{social:1,craft:2}},{text:"ジャンル問わず「本物感」があるかどうか",scores:{craft:3,think:1}}]},{q:"スマホで写真を撮るのはどんな時？",opts:[{text:"美味しいものを食べた時",scores:{craft:2,solo:1}},{text:"綺麗な景色や空を見た時",scores:{free:2,think:1}},{text:"友達や家族と一緒の時",scores:{social:3}},{text:"気になるモノや情報を記録する時",scores:{think:3}}]},{q:"買い物で一番重視するのは？",opts:[{text:"コスパ。同じ品質なら安い方",scores:{think:2,action:1}},{text:"ブランドや作り手のストーリー",scores:{craft:3}},{text:"直感。「これだ」と思ったら買う",scores:{free:2,action:2}},{text:"周りの評判やレビュー",scores:{social:2,think:1}}]},{q:"ストレスが溜まった時の第一選択は？",opts:[{text:"一人で好きなものを食べる・飲む",scores:{solo:3,craft:1}},{text:"体を動かすか、どこかに出かける",scores:{action:3,free:1}},{text:"誰かに話を聞いてもらう",scores:{social:3}},{text:"没頭できる作業やゲームに集中する",scores:{think:2,solo:2}}]},{q:"仕事で一番テンションが上がる瞬間は？",opts:[{text:"新しい企画やアイデアが通った時",scores:{free:2,action:2}},{text:"複雑な問題を分析して解決した時",scores:{think:3,craft:1}},{text:"チームで成果を出した時",scores:{social:2,action:1}},{text:"自分のこだわりが形になった時",scores:{craft:3,solo:1}}]},{q:"理想の夜の過ごし方は？",opts:[{text:"行きつけの店のカウンターで一杯",scores:{solo:2,craft:2}},{text:"気の合う仲間と深い話",scores:{social:2,think:1}},{text:"新しい店や場所を開拓する",scores:{free:2,action:2}},{text:"家で好きなコンテンツに浸る",scores:{solo:2,think:2}}]}];
+const TYPES={"craft-solo":{name:"審美眼を持つ孤高の目利き",sub:"Solitary Connoisseur",desc:"大衆が見過ごすものの中から本物を見つけ出す目。流行ではなく、自分の感覚だけを信じて選ぶ。",traits:["一人の時間が創造の源","モノへのこだわりが強い","少数精鋭の人間関係"],meters:{think:70,action:35,social:25,craft:95,free:55,solo:90},quote:"あなたの直感は「何を選ぶか」ではなく「何を選ばないか」に現れている。その引き算の美学が署名。",verdict:"静かだけど、誰よりも自分の世界を持っている人。こだわりの一杯に、あなたの哲学が全部詰まっている。"},"craft-think":{name:"知識を武器にする探究者",sub:"Analytical Artisan",desc:"好きなものを「なぜ好きか」まで分解しないと気が済まない。感性と論理が同居する稀有なタイプ。",traits:["深掘り型の知識欲","理論と感覚の両刀使い","教えるのが実は好き"],meters:{think:90,action:40,social:35,craft:85,free:45,solo:70},quote:"あなたはDJのように生きている。素材を選ぶ審美眼と、並べ方のセンスで勝負する人。",verdict:"図書館と居酒屋が同じくらい好き。知識を編集して価値にできる人。"},"free-action":{name:"風を追う自由射手",sub:"Free-Range Archer",desc:"直感で動いて、だいたい合っている。束縛を嫌い、常に次の冒険を探している。",traits:["フットワーク最軽量","計画より行動","退屈が最大の敵"],meters:{think:40,action:90,social:50,craft:45,free:95,solo:55},quote:"あなたの人生は矢のよう。放たれたら止まらない。問題は、たまに的を決める前に飛んでいくこと。",verdict:"LCCのチケットを衝動買いして、現地で最高の体験を見つけてしまう天才。"},"social-action":{name:"場を動かすムードメイカー",sub:"Social Catalyst",desc:"人が集まると自然とその中心にいる。エネルギーの源泉は「人との化学反応」。",traits:["巻き込み力が武器","盛り上げ上手","一人の時間も意外と必要"],meters:{think:35,action:80,social:95,craft:30,free:65,solo:20},quote:"あなたがいるだけで場の温度が2度上がる。その才能を、自分では気づいていない。",verdict:"飲み会の幹事にされがち。でもそれが嫌いじゃない自分も知っている。"},"think-solo":{name:"静かなる戦略家",sub:"Silent Strategist",desc:"頭の中に常に3手先のシミュレーションが走っている。表には出さないが、実は全部見えている。",traits:["観察者ポジション","データと直感の融合","発言は少ないが的確"],meters:{think:95,action:30,social:20,craft:55,free:40,solo:95},quote:"あなたの武器は沈黙。喧らない時間に、他の人が見落とすものを全部拾っている。",verdict:"ポーカーフェイスの裏で、誰よりも考えている人。その頭脳を信じていい。"},"free-social":{name:"旅する語り部",sub:"Wandering Storyteller",desc:"新しい場所、新しい人、新しい体験。すべてが物語の素材になる。人生そのものがコンテンツ。",traits:["好奇心の塊","体験を共有したい","定住より移動"],meters:{think:45,action:70,social:75,craft:40,free:90,solo:35},quote:"あなたの人生は旅行記。読む人を選ぶけれど、読んだ人は必ずファンになる。",verdict:"インスタのストーリーが常に面白い人。それは演出じゃなく、本当に面白い毎日を生きているから。"},"craft-free":{name:"放浪する美食家",sub:"Roaming Epicurean",desc:"美味しいもの、美しいもの、本物のもの。それを求めてどこへでも行く。物欲ではなく体験欲。",traits:["五感で生きている","こだわりと冒険の両立","記録より記憶"],meters:{think:50,action:65,social:40,craft:85,free:85,solo:60},quote:"あなたのカメラロールは、ミシュランより信頼できるグルメガイド。",verdict:"路地裏の名店を知っている人。そしてそれを教えるのは、本当に信頼した相手だけ。"},"social-craft":{name:"人を見抜く審美眼",sub:"People Curator",desc:"モノだけでなく「人」に対しても審美眼が効く。誰と付き合うかのセンスが、人生の質を決めている。",traits:["人を見る目がある","関係性のキュレーター","裏方より黒幕"],meters:{think:55,action:45,social:80,craft:75,free:50,solo:40},quote:"あなたの最大の作品は、あなたの周りにいる人たちそのもの。",verdict:"紹介した人同士が仲良くなる。それはあなたの人を見る目が本物だから。"}};
+let answers=[],currentQ=0;
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function startQuiz(){answers=[];currentQ=0;showQuestion();show('screen-q');}
+function showQuestion(){const q=Q[currentQ];let dots='';for(let i=0;i<Q.length;i++){const cls=i<currentQ?'done':i===currentQ?'current':'';dots+=`<div class="q-dot ${cls}"></div>`;}document.getElementById('progress').innerHTML=dots;document.getElementById('q-num').textContent=`Q${currentQ+1} / ${Q.length}`;document.getElementById('q-text').textContent=q.q;let html='';q.opts.forEach((o,i)=>{html+=`<div class="choice" onclick="answer(${i})"><span class="ch-label">${String.fromCharCode(65+i)}</span>${o.text}</div>`;});document.getElementById('choices').innerHTML=html;document.getElementById('screen-q').style.animation='none';requestAnimationFrame(()=>{document.getElementById('screen-q').style.animation='fadeIn .3s ease';});}
+function answer(i){answers.push(Q[currentQ].opts[i].scores);currentQ++;if(currentQ<Q.length){showQuestion();}else{calcResult();}}
+function calcResult(){const totals={think:0,action:0,social:0,craft:0,free:0,solo:0};answers.forEach(s=>{for(const k in s)totals[k]=(totals[k]||0)+s[k];});const sorted=Object.entries(totals).sort((a,b)=>b[1]-a[1]);const top2=sorted[0][0]+'-'+sorted[1][0];const top2rev=sorted[1][0]+'-'+sorted[0][0];let typeKey=TYPES[top2]?top2:TYPES[top2rev]?top2rev:'craft-solo';const type=TYPES[typeKey];const colors=['var(--accent)','var(--accent2)','var(--accent3)','var(--accent)','var(--accent2)','var(--accent3)'];const meterLabels={think:'分析力',action:'行動力',social:'社交性',craft:'審美眼',free:'自由度',solo:'独立性'};let meters='';let mi=0;for(const k in type.meters){meters+=`<div class="r-meter"><span class="r-meter-label">${meterLabels[k]}</span><div class="r-meter-bar"><div class="r-meter-fill" style="width:${type.meters[k]}%;background:${colors[mi%6]}"></div></div></div>`;mi++;}let tags='';type.traits.forEach((t,i)=>{tags+=`<span class="r-tag ${i===0?'hl':''}">${t}</span>`;});document.getElementById('result-content').innerHTML=`<div class="result"><div class="r-header"><div class="r-eyebrow">Your Intuition Chart</div><div class="r-type">${type.name}</div><div class="r-subtitle">${type.sub}</div></div><div class="r-section"><div class="r-section-title">診断結果</div><div class="r-text">${type.desc}</div></div><div class="r-section"><div class="r-section-title">あなたのパラメータ</div><div class="r-meters">${meters}</div></div><div class="r-section"><div class="r-section-title">特徴キーワード</div><div class="r-tags">${tags}</div></div><div class="r-quote">${type.quote}</div><div class="r-verdict"><div class="r-verdict-title">「${type.name}」</div><div class="r-verdict-text">${type.verdict}</div></div><div class="r-share"><div class="r-share-text">結果をスクショしてシェアしてね📸</div></div><button class="btn btn-primary" onclick="startQuiz()">もう一度やる</button><button class="btn btn-outline" onclick="show('screen-start')">トップに戻る</button><div class="r-credit">直感カルテ診断 — AIで作りました</div></div>`;show('screen-result');}
+</script>
+</body>
+</html>
