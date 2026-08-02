@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ポーカー性格診断</title>
+<meta name="description" content="強さは測りません。なぜ卓に座るのか、どう感じているのかだけを12問で見ます。4つの軸で16タイプに分かれるポーカー性格診断。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ポーカー性格診断">
+<meta property="og:description" content="強さは測りません。なぜ卓に座るのか、どう感じているのかだけを12問で。4軸16タイプ、3分で終わります。">
+<meta name="twitter:card" content="summary">
+<style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0}</style>
+</head>
+<body>
+<style>
+  :root {
+    --ground: #EAEDE9;
+    --card: #FBFBF8;
+    --ink: #151B19;
+    --muted: #5D6A65;
+    --line: rgba(21, 27, 25, 0.14);
+    --line-soft: rgba(21, 27, 25, 0.07);
+    --accent: #A8232D;
+    --brass: #8A6D24;
+    --glow: rgba(21, 27, 25, 0.05);
+    --shadow: 0 1px 2px rgba(21,27,25,.05), 0 12px 32px -12px rgba(21,27,25,.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0E1518;
+      --card: #172025;
+      --ink: #E3E7E3;
+      --muted: #808F8A;
+      --line: rgba(227, 231, 227, 0.14);
+      --line-soft: rgba(227, 231, 227, 0.07);
+      --accent: #CE3B45;
+      --brass: #BC9646;
+      --glow: rgba(188, 150, 70, 0.07);
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -14px rgba(0,0,0,.65);
+    }
+  }
+
+  :root[data-theme="light"] {
+    --ground: #EAEDE9;
+    --card: #FBFBF8;
+    --ink: #151B19;
+    --muted: #5D6A65;
+    --line: rgba(21, 27, 25, 0.14);
+    --line-soft: rgba(21, 27, 25, 0.07);
+    --accent: #A8232D;
+    --brass: #8A6D24;
+    --glow: rgba(21, 27, 25, 0.05);
+    --shadow: 0 1px 2px rgba(21,27,25,.05), 0 12px 32px -12px rgba(21,27,25,.18);
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #0E1518;
+    --card: #172025;
+    --ink: #E3E7E3;
+    --muted: #808F8A;
+    --line: rgba(227, 231, 227, 0.14);
+    --line-soft: rgba(227, 231, 227, 0.07);
+    --accent: #CE3B45;
+    --brass: #BC9646;
+    --glow: rgba(188, 150, 70, 0.07);
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 18px 40px -14px rgba(0,0,0,.65);
+  }
+
+  .pk-serif {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+  }
+
+  .pk-root {
+    --sans: "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Noto Sans JP", system-ui, sans-serif;
+    --mono: ui-monospace, "SFMono-Regular", "Menlo", "Consolas", monospace;
+    font-family: var(--sans);
+    background: var(--ground);
+    background-image: radial-gradient(120% 70% at 50% 0%, var(--glow), transparent 70%);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: clamp(20px, 5vw, 56px) clamp(16px, 4vw, 32px) 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.75;
+  }
+
+  .pk-root *, .pk-root *::before, .pk-root *::after { box-sizing: border-box; }
+
+  .pk-shell { width: 100%; max-width: 620px; display: flex; flex-direction: column; gap: 28px; }
+
+  /* ---------- masthead ---------- */
+  .pk-mast { display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
+  .pk-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pk-title {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+    font-size: clamp(30px, 7vw, 44px);
+    font-weight: 600;
+    letter-spacing: .06em;
+    line-height: 1.3;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .pk-lede {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 34em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  /* ---------- panel ---------- */
+  .pk-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    padding: clamp(22px, 5vw, 38px);
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  /* ---------- axis slots ---------- */
+  .pk-slots { display: flex; gap: 8px; justify-content: center; }
+  .pk-slot {
+    flex: 1;
+    max-width: 74px;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 7px 0 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    transition: border-color .35s ease, background-color .35s ease;
+  }
+  .pk-slot[data-locked="true"] { border-color: var(--brass); background: color-mix(in srgb, var(--brass) 9%, transparent); }
+  .pk-slot-letter {
+    font-family: var(--mono);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--muted);
+    transition: color .35s ease;
+  }
+  .pk-slot[data-locked="true"] .pk-slot-letter { color: var(--brass); }
+  .pk-slot-name { font-size: 9.5px; letter-spacing: .14em; color: var(--muted); }
+
+  /* ---------- progress ---------- */
+  .pk-meter { display: flex; flex-direction: column; gap: 8px; }
+  .pk-meter-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .pk-rail { height: 2px; background: var(--line-soft); border-radius: 2px; overflow: hidden; }
+  .pk-fill { height: 100%; width: 0%; background: var(--accent); transition: width .4s cubic-bezier(.4,0,.2,1); }
+
+  /* ---------- question ---------- */
+  .pk-q { display: flex; flex-direction: column; gap: 20px; }
+  .pk-q-text {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+    font-size: clamp(19px, 4.4vw, 23px);
+    font-weight: 600;
+    line-height: 1.6;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .pk-opts { display: flex; flex-direction: column; gap: 11px; }
+  .pk-opt {
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 15px 17px;
+    cursor: pointer;
+    line-height: 1.65;
+    display: flex;
+    gap: 13px;
+    align-items: flex-start;
+    transition: border-color .18s ease, background-color .18s ease, transform .18s ease;
+  }
+  .pk-opt:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .pk-opt:active { transform: translateY(1px); }
+  .pk-opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .pk-opt-mark {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    padding-top: 4px;
+    flex: none;
+    transition: color .18s ease;
+  }
+  .pk-opt:hover .pk-opt-mark { color: var(--accent); }
+
+  .pk-anim { animation: pk-in .34s cubic-bezier(.2,.7,.3,1) both; }
+  @keyframes pk-in { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- buttons ---------- */
+  .pk-btn {
+    font: inherit;
+    font-size: 15px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--card);
+    border-radius: 2px;
+    padding: 13px 30px;
+    cursor: pointer;
+    letter-spacing: .06em;
+    align-self: center;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .pk-btn:hover { opacity: .86; }
+  .pk-btn:active { transform: translateY(1px); }
+  .pk-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .pk-btn-ghost { background: transparent; color: var(--muted); border-color: var(--line); }
+  .pk-btn-ghost:hover { color: var(--ink); border-color: var(--ink); opacity: 1; }
+
+  /* ---------- result ---------- */
+  .pk-code { display: flex; gap: 9px; justify-content: center; }
+  .pk-code span {
+    font-family: var(--mono);
+    font-size: clamp(34px, 9vw, 50px);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--brass);
+    border-bottom: 2px solid color-mix(in srgb, var(--brass) 45%, transparent);
+    padding: 0 8px 8px;
+    animation: pk-stamp .4s cubic-bezier(.2,.8,.3,1) both;
+  }
+  @keyframes pk-stamp { from { opacity: 0; transform: scale(1.35); } to { opacity: 1; transform: none; } }
+
+  .pk-type {
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+    font-size: clamp(25px, 6vw, 34px);
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    margin: 0;
+    letter-spacing: .04em;
+    text-wrap: balance;
+  }
+  .pk-traits { margin: 0; text-align: center; font-size: 16px; text-wrap: balance; }
+  .pk-verdict {
+    margin: 0;
+    padding: 18px 20px;
+    border-left: 2px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+    font-size: 17px;
+    line-height: 1.8;
+  }
+
+  .pk-axes { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--line-soft); }
+  .pk-axis {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13.5px;
+  }
+  .pk-axis-pole { color: var(--muted); transition: none; }
+  .pk-axis-pole[data-on="true"] { color: var(--ink); font-weight: 600; }
+  .pk-axis-pole.pk-r { text-align: right; }
+  .pk-axis-bar { position: relative; width: 66px; height: 2px; background: var(--line); }
+  .pk-axis-dot {
+    position: absolute; top: 50%; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--accent); transform: translate(-50%, -50%);
+  }
+  .pk-axis-score {
+    font-family: var(--mono); font-size: 10.5px; color: var(--muted);
+    font-variant-numeric: tabular-nums; letter-spacing: .08em;
+  }
+
+  .pk-foot { text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+  .pk-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pk-root *, .pk-root *::before, .pk-root *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+    }
+  }
+</style>
+
+<div class="pk-root">
+  <div class="pk-shell">
+
+    <header class="pk-mast">
+      <div class="pk-eyebrow">12 questions &middot; 16 types</div>
+      <h1 class="pk-title">ポーカー性格診断</h1>
+      <p class="pk-lede" id="pk-lede">強さは測りません。<br>なぜ卓に座るのか、どう感じているのかだけを12問で見ます。</p>
+    </header>
+
+    <main class="pk-panel" id="pk-panel"></main>
+
+    <p class="pk-foot">ポーカー性格診断 — AIで作りました</p>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var AXES = [
+    { key: "A", name: "動機", pos: "R", neg: "P", posLabel: "結果", negLabel: "過程" },
+    { key: "B", name: "距離", pos: "S", neg: "G", posLabel: "孤",   negLabel: "群"   },
+    { key: "C", name: "判断", pos: "L", neg: "I", posLabel: "理",   negLabel: "感"   },
+    { key: "D", name: "気質", pos: "A", neg: "D", posLabel: "攻",   negLabel: "守"   }
+  ];
+
+  var QUESTIONS = [
+    { ax: "A", q: "トーナメントで早々にバストした。まず何をする？",
+      a: { p: "R", t: "ハンドを思い返して、どこで間違えたか探す" },
+      b: { p: "P", t: "とりあえず何か食べに行く。今日はもう終わり" } },
+    { ax: "B", q: "店に着いた。空いている席が2つある。",
+      a: { p: "S", t: "静かそうな卓の、端の席" },
+      b: { p: "G", t: "一番笑い声が聞こえる卓" } },
+    { ax: "C", q: "相手の大きなベット。決め手になるのは？",
+      a: { p: "L", t: "レンジと、そのサイズが何を意味するか" },
+      b: { p: "I", t: "その人がここまでどう打ってきたかの印象" } },
+    { ax: "D", q: "微妙な場面で、迷ったときのくせは？",
+      a: { p: "A", t: "とりあえず行ってみる" },
+      b: { p: "D", t: "分からないなら降りる" } },
+    { ax: "A", q: "一晩やって、収支はほぼプラマイゼロだった。",
+      a: { p: "R", t: "何も残らなかった。時間を損した気がする" },
+      b: { p: "P", t: "いいハンドが何回かあった。悪くない夜だった" } },
+    { ax: "B", q: "印象に残ったハンドがあった。",
+      a: { p: "S", t: "誰にも言わない。自分の中で終わらせる" },
+      b: { p: "G", t: "誰かに聞いてほしい。あの話をしたい" } },
+    { ax: "C", q: "迷った末に降りた。相手は弱いハンドだった。",
+      a: { p: "L", t: "判断は正しかった。結果は関係ない" },
+      b: { p: "I", t: "やっぱりそうだった。次は行こう" } },
+    { ax: "D", q: "大きく負けた翌日。",
+      a: { p: "A", t: "すぐ取り返しに行きたくなる" },
+      b: { p: "D", t: "少し間を空ける" } },
+    { ax: "A", q: "ポーカーに使う時間を一言で言うと？",
+      a: { p: "R", t: "上達のための投資" },
+      b: { p: "P", t: "自分に戻るための時間" } },
+    { ax: "B", q: "知らない土地のポーカールームに入るとき。",
+      a: { p: "S", t: "一人のほうが気楽でいい" },
+      b: { p: "G", t: "誰か知り合いがいると心強い" } },
+    { ax: "C", q: "強くなるために足りないものは？",
+      a: { p: "L", t: "勉強量とデータ" },
+      b: { p: "I", t: "場数と、その場の感覚" } },
+    { ax: "D", q: "自分のポーカーを一言で言われるなら、どっちが嬉しい？",
+      a: { p: "A", t: "「何してくるか分からない」" },
+      b: { p: "D", t: "「隙がない」" } }
+  ];
+
+  var TYPES = {
+    "R-S-L-A": { name: "静かに刈り取る執行者", traits: "騒がず、群れず。しかし引くべきでない場面では一切ためらわない。", verdict: "あなたが席を立つとき、卓の誰かが必ずその理由を考えている。" },
+    "R-S-L-D": { name: "勝率だけを信じる求道者", traits: "感情でも空気でもなく、長い目で見て正しいほうを選び続ける。", verdict: "今夜の結果はどうでもいい。あなたが見ているのは、もっと先の数字だ。" },
+    "R-S-I-A": { name: "勘で踏み込む一匹狼", traits: "説明はできない。でも行くと決めた場面で、外したことがあまりない。", verdict: "理屈が追いつく頃には、あなたはもうチップを押し出している。" },
+    "R-S-I-D": { name: "機を待つ狙撃手", traits: "ほとんどの時間は降りている。そのほとんどが、次の一発のための準備。", verdict: "待てるというのは、それ自体がひとつの武器だ。" },
+    "R-G-L-A": { name: "卓を支配する戦術家", traits: "全員の癖を把握したうえで、いちばん効くところに圧をかける。", verdict: "あなたがいる卓は、いつのまにかあなたのペースで進んでいる。" },
+    "R-G-L-D": { name: "損を出さない現実主義者", traits: "大勝ちより、大負けしないこと。地味だが、最後に残るのはこの型。", verdict: "派手さはない。ただ、あなたはいつも生き残っている。" },
+    "R-G-I-A": { name: "空気ごと持っていく仕掛け人", traits: "場の温度を読んで、いちばん上がったところで一気に持っていく。", verdict: "数字ではなく空気を刈り取れる人は、そう多くない。" },
+    "R-G-I-D": { name: "人を見て降りる観察者", traits: "カードより先に人を見る。だから、無理な勝負には付き合わない。", verdict: "あなたが降りたとき、その判断はたいてい合っている。" },
+    "P-S-L-A": { name: "理屈で遊ぶ実験者", traits: "勝つためというより、試したいから押す。結果は後でゆっくり検証する。", verdict: "卓はあなたにとって、勝負の場である前に実験室だ。" },
+    "P-S-L-D": { name: "一人で盤面を味わう研究者", traits: "参加していなくても面白い。人の打ち方を眺めているだけで時間が経つ。", verdict: "あなたにとってポーカーは、打つ前にまず「見る」ゲームだ。" },
+    "P-S-I-A": { name: "非日常に飛び込む旅人", traits: "勝ち負けよりも、知らない場所の知らない卓に座る瞬間が好き。", verdict: "あなたが集めているのはチップではなく、日常から少し離れた時間だ。" },
+    "P-S-I-D": { name: "静かに眺める夜の常連", traits: "大勝負はしない。その場所にいること自体が、もう目的になっている。", verdict: "勝っても負けても、あなたは来週も同じ席に座っている。" },
+    "P-G-L-A": { name: "語りながら攻める解説者", traits: "打ちながら考えを言葉にしてしまう。うるさいけれど、たいてい当たっている。", verdict: "あなたのハンドは、いつのまにか全員の教材になっている。" },
+    "P-G-L-D": { name: "卓の知恵袋", traits: "自分の勝負より、隣の人の疑問に答えているほうが楽しい。", verdict: "あなたがいる卓は、初めての人が帰りたくならない卓だ。" },
+    "P-G-I-A": { name: "場を明るくするムードメイカー", traits: "勝っても負けても声が出る。その一言で卓の空気が変わる。", verdict: "あなたが抜けた瞬間、その卓は少しだけ静かになる。" },
+    "P-G-I-D": { name: "みんなの居場所を作る人", traits: "自分が主役でなくていい。全員が居心地よく打てていれば満足。", verdict: "強さの話ではない。あなたがいるから、その卓は続いている。" }
+  };
+
+  var panel = document.getElementById("pk-panel");
+  var lede = document.getElementById("pk-lede");
+  var idx = 0;
+  var scores = {};
+
+  function reset() {
+    idx = 0;
+    scores = {};
+    AXES.forEach(function (ax) { scores[ax.pos] = 0; scores[ax.neg] = 0; });
+  }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  /* An axis locks once one pole reaches 2 of its 3 questions. */
+  function lockedLetter(ax) {
+    if (scores[ax.pos] >= 2) return ax.pos;
+    if (scores[ax.neg] >= 2) return ax.neg;
+    return null;
+  }
+
+  function buildSlots() {
+    var wrap = el("div", "pk-slots");
+    AXES.forEach(function (ax) {
+      var letter = lockedLetter(ax);
+      var slot = el("div", "pk-slot");
+      slot.setAttribute("data-locked", letter ? "true" : "false");
+      slot.appendChild(el("div", "pk-slot-letter", letter || "·"));
+      slot.appendChild(el("div", "pk-slot-name", ax.name));
+      wrap.appendChild(slot);
+    });
+    return wrap;
+  }
+
+  function renderIntro() {
+    reset();
+    panel.textContent = "";
+    panel.classList.add("pk-anim");
+
+    var list = el("div", "pk-axes");
+    AXES.forEach(function (ax) {
+      var row = el("div", "pk-axis");
+      row.appendChild(el("div", "pk-axis-pole", ax.posLabel));
+      row.appendChild(el("div", "pk-axis-score", ax.name));
+      var r = el("div", "pk-axis-pole pk-r", ax.negLabel);
+      r.style.textAlign = "left";
+      row.appendChild(r);
+      list.appendChild(row);
+    });
+
+    panel.appendChild(el("p", "pk-q-text", "4つの軸で、あなたのポーカーを16タイプに分けます。"));
+    panel.appendChild(list);
+
+    var btn = el("button", "pk-btn", "はじめる");
+    btn.type = "button";
+    btn.addEventListener("click", renderQuestion);
+    panel.appendChild(btn);
+  }
+
+  function renderQuestion() {
+    var q = QUESTIONS[idx];
+    panel.textContent = "";
+    panel.classList.remove("pk-anim");
+    void panel.offsetWidth;
+    panel.classList.add("pk-anim");
+
+    panel.appendChild(buildSlots());
+
+    var meter = el("div", "pk-meter");
+    var head = el("div", "pk-meter-head");
+    head.appendChild(el("span", null, String(idx + 1).padStart(2, "0") + " / " + QUESTIONS.length));
+    head.appendChild(el("span", null, AXES.filter(function (a) { return a.key === q.ax; })[0].name));
+    meter.appendChild(head);
+    var rail = el("div", "pk-rail");
+    var fill = el("div", "pk-fill");
+    rail.appendChild(fill);
+    meter.appendChild(rail);
+    panel.appendChild(meter);
+    requestAnimationFrame(function () { fill.style.width = ((idx) / QUESTIONS.length * 100) + "%"; });
+
+    var box = el("div", "pk-q");
+    box.appendChild(el("h2", "pk-q-text", q.q));
+    var opts = el("div", "pk-opts");
+    [q.a, q.b].forEach(function (o, i) {
+      var b = el("button", "pk-opt");
+      b.type = "button";
+      b.appendChild(el("span", "pk-opt-mark", i === 0 ? "A" : "B"));
+      b.appendChild(el("span", null, o.t));
+      b.addEventListener("click", function () { choose(o.p); });
+      opts.appendChild(b);
+    });
+    box.appendChild(opts);
+    panel.appendChild(box);
+  }
+
+  function choose(pole) {
+    scores[pole] += 1;
+    idx += 1;
+    if (idx >= QUESTIONS.length) { renderResult(); } else { renderQuestion(); }
+  }
+
+  function renderResult() {
+    var letters = AXES.map(function (ax) {
+      return scores[ax.pos] > scores[ax.neg] ? ax.pos : ax.neg;
+    });
+    var key = letters.join("-");
+    var type = TYPES[key];
+
+    panel.textContent = "";
+    panel.classList.remove("pk-anim");
+    void panel.offsetWidth;
+    panel.classList.add("pk-anim");
+    lede.textContent = "あなたの結果です。";
+
+    var code = el("div", "pk-code");
+    letters.forEach(function (l, i) {
+      var s = el("span", null, l);
+      s.style.animationDelay = (i * 0.11) + "s";
+      code.appendChild(s);
+    });
+    panel.appendChild(code);
+
+    panel.appendChild(el("h2", "pk-type", type.name));
+    panel.appendChild(el("p", "pk-traits", type.traits));
+    panel.appendChild(el("p", "pk-verdict", type.verdict));
+
+    var list = el("div", "pk-axes");
+    AXES.forEach(function (ax) {
+      var pos = scores[ax.pos], neg = scores[ax.neg];
+      var row = el("div", "pk-axis");
+
+      var l = el("div", "pk-axis-pole", ax.posLabel);
+      l.setAttribute("data-on", pos > neg ? "true" : "false");
+      l.classList.add("pk-r");
+      row.appendChild(l);
+
+      var bar = el("div", "pk-axis-bar");
+      var dot = el("div", "pk-axis-dot");
+      dot.style.left = (pos / (pos + neg) * 100) + "%";
+      bar.appendChild(dot);
+      var cell = el("div");
+      cell.style.display = "flex";
+      cell.style.flexDirection = "column";
+      cell.style.alignItems = "center";
+      cell.style.gap = "5px";
+      cell.appendChild(bar);
+      cell.appendChild(el("div", "pk-axis-score", pos + " : " + neg));
+      row.appendChild(cell);
+
+      var r = el("div", "pk-axis-pole", ax.negLabel);
+      r.setAttribute("data-on", neg > pos ? "true" : "false");
+      row.appendChild(r);
+
+      list.appendChild(row);
+    });
+    panel.appendChild(list);
+
+    var actions = el("div", "pk-actions");
+    var again = el("button", "pk-btn pk-btn-ghost", "もう一度");
+    again.type = "button";
+    again.addEventListener("click", function () {
+      lede.innerHTML = "強さは測りません。<br>なぜ卓に座るのか、どう感じているのかだけを12問で見ます。";
+      renderIntro();
+    });
+    actions.appendChild(again);
+    panel.appendChild(actions);
+  }
+
+  renderIntro();
+})();
+</script>
+
+</body>
+</html>
