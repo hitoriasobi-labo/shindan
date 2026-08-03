@@ -292,7 +292,24 @@
   }
 
   .pk-foot { text-align: center; font-size: 12px; color: var(--muted); letter-spacing: .06em; }
-  .pk-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .pk-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  a.pk-btn { display: inline-block; text-decoration: none; }
+  .pk-share {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .pk-share-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+  }
+  .pk-note { text-align: center; font-size: 12px; color: var(--muted); min-height: 1.2em; }
 
   @media (prefers-reduced-motion: reduce) {
     .pk-root *, .pk-root *::before, .pk-root *::after {
@@ -322,6 +339,35 @@
 <script>
 (function () {
   "use strict";
+
+  /* 共有時は必ず公開URLを指す（このページがどこに埋め込まれていても） */
+  var SHARE_URL = "https://hitoriasobi-labo.github.io/shindan/poker/";
+
+  function copyText(text, note) {
+    function done(ok) {
+      note.textContent = ok ? "コピーしました" : "コピーできませんでした。長押しで選択してください";
+      setTimeout(function () { note.textContent = ""; }, 2600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { fallback(); });
+    } else {
+      fallback();
+    }
+    function fallback() {
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.top = "-1000px";
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        done(ok);
+      } catch (e) { done(false); }
+    }
+  }
 
   var AXES = [
     { key: "A", name: "動機", pos: "R", neg: "P", posLabel: "結果", negLabel: "過程" },
@@ -549,7 +595,44 @@
     });
     panel.appendChild(list);
 
+    /* ---- share ---- */
+    var shareText =
+      "ポーカー性格診断をやってみた。\n\n【" + type.name + "】" + key + "\n" +
+      type.verdict + "\n\n#ポーカー性格診断";
+
+    var share = el("div", "pk-share");
+    share.appendChild(el("div", "pk-share-label", "結果をシェア"));
+
     var actions = el("div", "pk-actions");
+
+    var xa = el("a", "pk-btn", "Xにポスト");
+    xa.href = "https://x.com/intent/post?text=" +
+      encodeURIComponent(shareText) + "&url=" + encodeURIComponent(SHARE_URL);
+    xa.target = "_blank";
+    xa.rel = "noopener noreferrer";
+    actions.appendChild(xa);
+
+    var note = el("p", "pk-note", "");
+
+    var copy = el("button", "pk-btn pk-btn-ghost", "文章をコピー");
+    copy.type = "button";
+    copy.addEventListener("click", function () {
+      copyText(shareText + "\n" + SHARE_URL, note);
+    });
+    actions.appendChild(copy);
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      var nat = el("button", "pk-btn pk-btn-ghost", "共有");
+      nat.type = "button";
+      nat.addEventListener("click", function () {
+        try {
+          navigator.share({ title: "ポーカー性格診断", text: shareText, url: SHARE_URL })
+            .catch(function () {});
+        } catch (e) { /* 共有に非対応の環境では何もしない */ }
+      });
+      actions.appendChild(nat);
+    }
+
     var again = el("button", "pk-btn pk-btn-ghost", "もう一度");
     again.type = "button";
     again.addEventListener("click", function () {
@@ -557,7 +640,10 @@
       renderIntro();
     });
     actions.appendChild(again);
-    panel.appendChild(actions);
+
+    share.appendChild(actions);
+    share.appendChild(note);
+    panel.appendChild(share);
   }
 
   renderIntro();
