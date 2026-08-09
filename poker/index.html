@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ポーカー性格診断</title>
-<meta name="description" content="強さは測りません。見るのは、なぜ卓に座るのかだけ。4つの軸12問で16タイプに分かれるポーカー性格診断。">
+<meta name="description" content="強さは測りません。見るのは、なぜ卓に座るのかだけ。4つの軸20問で16タイプに分かれるポーカー性格診断。出現率つき。">
 <link rel="canonical" href="https://hitoriasobi-labo.github.io/shindan/poker/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hitoriasobi-labo.github.io/shindan/poker/">
 <meta property="og:title" content="ポーカー性格診断">
-<meta property="og:description" content="強さは測りません。見るのは、なぜ卓に座るのかだけ。4軸12問、16タイプ。3分で終わります。">
+<meta property="og:description" content="強さは測りません。見るのは、なぜ卓に座るのかだけ。4軸20問、16タイプ。あなたの型が何人に1人かも出ます。">
 <meta property="og:image" content="https://hitoriasobi-labo.github.io/shindan/poker/card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="ポーカー性格診断 — 結果/過程、孤/群、理/感、攻/守の4軸">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="ポーカー性格診断">
-<meta name="twitter:description" content="強さは測りません。見るのは、なぜ卓に座るのかだけ。4軸12問、16タイプ。">
+<meta name="twitter:description" content="強さは測りません。見るのは、なぜ卓に座るのかだけ。4軸20問、16タイプ。出現率つき。">
 <meta name="twitter:image" content="https://hitoriasobi-labo.github.io/shindan/poker/card.png">
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;padding:0}</style>
 </head>
@@ -277,6 +277,44 @@
     line-height: 1.8;
   }
 
+  .pk-rarity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 16px;
+    border: 1px solid var(--line-soft);
+    border-radius: 10px;
+  }
+  .pk-rarity-label {
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .pk-rarity-pct {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: .02em;
+  }
+  .pk-rarity-people { font-size: 14px; text-align: center; }
+  .pk-rarity-scale {
+    display: flex;
+    gap: 3px;
+    width: 100%;
+    max-width: 260px;
+  }
+  .pk-rarity-cell {
+    flex: 1;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--line-soft);
+  }
+  .pk-rarity-cell[data-on="true"] { background: var(--accent); }
+  .pk-rarity-rank { font-size: 13px; text-align: center; }
+  .pk-rarity-note { font-size: 11px; opacity: .6; text-align: center; line-height: 1.6; }
+
   .pk-axes { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--line-soft); }
   .pk-axis {
     display: grid;
@@ -335,7 +373,7 @@
     <header class="pk-mast">
       <div class="pk-eyebrow">12 questions &middot; 16 types</div>
       <h1 class="pk-title">ポーカー性格診断</h1>
-      <p class="pk-lede" id="pk-lede">強さは測りません。<br>なぜ卓に座るのか、どう感じているのかだけを12問で見ます。</p>
+      <p class="pk-lede" id="pk-lede">強さは測りません。<br>なぜ卓に座るのか、どう感じているのかだけを20問で見ます。</p>
     </header>
 
     <main class="pk-panel" id="pk-panel"></main>
@@ -385,6 +423,27 @@
     { key: "D", name: "気質", pos: "A", neg: "D", posLabel: "攻",   negLabel: "守"   }
   ];
 
+  /* 各極の推定選択率（%）。同じ軸の2つで合計100になる。
+     打ち手の自己認識の偏り（勝ちにこだわる／卓では静かめ／理屈より場数／降りている時間のほうが長い）を反映した設計値。 */
+  var WEIGHTS = { R: 60, P: 40, S: 57, G: 43, L: 45, I: 55, A: 44, D: 56 };
+
+  /* 16タイプの出現率を一度だけ計算して、珍しい順に並べておく */
+  var RARITY = (function () {
+    var table = {};
+    ["R", "P"].forEach(function (a) {
+      ["S", "G"].forEach(function (b) {
+        ["L", "I"].forEach(function (c) {
+          ["A", "D"].forEach(function (d) {
+            var pct = WEIGHTS[a] / 100 * WEIGHTS[b] / 100 * WEIGHTS[c] / 100 * WEIGHTS[d] / 100 * 100;
+            table[[a, b, c, d].join("-")] = pct;
+          });
+        });
+      });
+    });
+    var order = Object.keys(table).sort(function (x, y) { return table[x] - table[y]; });
+    return { pct: table, order: order };
+  })();
+
   var QUESTIONS = [
     { ax: "A", q: "トーナメントで早々にバストした。まず何をする？",
       a: { p: "R", t: "ハンドを思い返して、どこで間違えたか探す" },
@@ -421,7 +480,31 @@
       b: { p: "I", t: "場数と、その場の感覚" } },
     { ax: "D", q: "自分のポーカーを一言で言われるなら、どっちが嬉しい？",
       a: { p: "A", t: "「何してくるか分からない」" },
-      b: { p: "D", t: "「隙がない」" } }
+      b: { p: "D", t: "「隙がない」" } },
+    { ax: "A", q: "配信や動画でポーカーを見るとき、目が行くのは？",
+      a: { p: "R", t: "その選択が正しかったかどうか" },
+      b: { p: "P", t: "打っている人の表情や、その場の空気" } },
+    { ax: "B", q: "卓で隣になった人が話しかけてきた。",
+      a: { p: "S", t: "短く返す。集中を切らしたくない" },
+      b: { p: "G", t: "話す。そのほうが場が過ごしやすい" } },
+    { ax: "C", q: "自分の打ち方を人に説明するとしたら？",
+      a: { p: "L", t: "理由を順番に言葉にできる" },
+      b: { p: "I", t: "説明しようとすると、うまく言えない" } },
+    { ax: "D", q: "終盤、残りチップが心細くなってきた。",
+      a: { p: "A", t: "動けるうちに勝負したい" },
+      b: { p: "D", t: "いい形が来るまで粘る" } },
+    { ax: "A", q: "もしポーカーで一生勝てないと分かったら？",
+      a: { p: "R", t: "やる意味がかなり薄れる" },
+      b: { p: "P", t: "それでもたぶん打ちに行く" } },
+    { ax: "B", q: "勝った日の帰り道。",
+      a: { p: "S", t: "誰にも言わずに一人で余韻を味わう" },
+      b: { p: "G", t: "誰かに報告したくなる" } },
+    { ax: "C", q: "「なんとなく嫌な予感」がした。",
+      a: { p: "L", t: "根拠がないなら判断材料にしない" },
+      b: { p: "I", t: "その予感はだいたい当たるので従う" } },
+    { ax: "D", q: "自分より明らかに強い人が卓にいる。",
+      a: { p: "A", t: "やってみたい。いい機会だと思う" },
+      b: { p: "D", t: "その人とは大きな勝負を避ける" } }
   ];
 
   var TYPES = {
@@ -573,6 +656,28 @@
     panel.appendChild(el("p", "pk-traits", type.traits));
     panel.appendChild(el("p", "pk-verdict", type.verdict));
 
+    /* ---- レア度 ---- */
+    var pct = RARITY.pct[key];
+    var rank = RARITY.order.indexOf(key) + 1;      /* 1 = もっとも珍しい */
+    var perPeople = Math.round(100 / pct);          /* 何人に1人か */
+    var pctText = pct.toFixed(1) + "%";
+
+    var rar = el("div", "pk-rarity");
+    rar.appendChild(el("div", "pk-rarity-label", "RARITY"));
+    rar.appendChild(el("div", "pk-rarity-pct", pctText));
+    rar.appendChild(el("div", "pk-rarity-people", "およそ " + perPeople + "人に1人"));
+
+    var scale = el("div", "pk-rarity-scale");
+    for (var i = 0; i < 16; i++) {
+      var cell = el("div", "pk-rarity-cell");
+      cell.setAttribute("data-on", i < (17 - rank) ? "true" : "false");
+      scale.appendChild(cell);
+    }
+    rar.appendChild(scale);
+    rar.appendChild(el("div", "pk-rarity-rank", "16タイプ中、珍しさ " + rank + "位"));
+    rar.appendChild(el("div", "pk-rarity-note", "出現率は回答の偏りをもとにした推定値です。"));
+    panel.appendChild(rar);
+
     var list = el("div", "pk-axes");
     AXES.forEach(function (ax) {
       var pos = scores[ax.pos], neg = scores[ax.neg];
@@ -607,6 +712,7 @@
     /* ---- share ---- */
     var shareText =
       "ポーカー性格診断をやってみた。\n\n【" + type.name + "】" + key + "\n" +
+      "出現率 " + pctText + "（およそ" + perPeople + "人に1人・16タイプ中" + rank + "位の珍しさ）\n" +
       type.verdict + "\n\n#ポーカー性格診断";
 
     var share = el("div", "pk-share");
@@ -645,7 +751,7 @@
     var again = el("button", "pk-btn pk-btn-ghost", "もう一度");
     again.type = "button";
     again.addEventListener("click", function () {
-      lede.innerHTML = "強さは測りません。<br>なぜ卓に座るのか、どう感じているのかだけを12問で見ます。";
+      lede.innerHTML = "強さは測りません。<br>なぜ卓に座るのか、どう感じているのかだけを20問で見ます。";
       renderIntro();
     });
     actions.appendChild(again);
