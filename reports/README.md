@@ -9,7 +9,7 @@
 - `build_report.py` — 上の2つから Excel を作る。
 
 ```
-python3 build_report.py 2026-10   # → out/202610_マーケティング本部月次報告書.xlsx
+python3 build_report.py 2026-10   # → out/202610_マーケティング本部月次報告書.xlsx（作った Excel もコミットする）
 ```
 
 年度は4月始まり。「前月増減」「前年同月比」は今年度の行にだけ出る。Facebook は運用終了のため対象外。
