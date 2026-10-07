@@ -12,7 +12,7 @@
 | YouTube | 19,713 | +30 | 19,372 | +341 |
 | LINE | 24,095 | +75 | 22,994 | +1,101 |
 
-Facebook は月次報告書に載っていない（2025年3月度の報告書では 16,292）。
+Facebook は運用終了のため記録対象外。
 
 ### 2026年度の推移（月次報告書より）
 
@@ -32,6 +32,4 @@ Facebook は月次報告書に載っていない（2025年3月度の報告書で
 | X | [@victas_inc](https://x.com/victas_inc) | 約28.6K | 公式値とほぼ一致 |
 | YouTube | [@VICTAS-Inc](https://www.youtube.com/@VICTAS-Inc) | 約19.7K | 公式値とほぼ一致 |
 | Instagram（海外） | [@victas_tabletennis](https://www.instagram.com/victas_tabletennis/) | 約14K | 国内の @victas.inc とは別アカウント |
-| Facebook（欧州） | [VICTAS Table Tennis](https://www.facebook.com/victas.tabletennis/) | 6,551 | 欧州代理店運営 |
-| Facebook（仏） | [VICTAS Tennis de Table](https://www.facebook.com/victas.france/) | 約2K | |
 | TikTok | — | — | 公式アカウントは確認できず |
