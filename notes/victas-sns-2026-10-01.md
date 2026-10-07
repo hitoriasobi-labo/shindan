@@ -1,18 +1,37 @@
-# VICTAS SNS 数値メモ（2026-10-01 分・仮）
+# VICTAS SNS 数値メモ（2026-10-01 分）
 
-※ 実際の取得日は 2026-10-06。月次比較の起点として 10/1 分の代わりに使う。
+## 公式値（社内の月次報告書から）
 
-取得方法: Web検索の結果に表示された数値を転記。
-各SNSへの直接アクセスは今回の作業環境のネットワーク制限で不可だったため、
-検索エンジンが保存していた時点の数値の可能性がある（厳密な当日値ではない）。
+出典: 坂田さん「2026年9月度 マーケティング本部 月次報告書」（202609_マーケティング本部月次報告書.xlsx、シート「WEB・SNS数値」、2026-10-05 全社宛てメール）。
+9月の数値を 10/1 時点の値として扱う。
+
+| SNS | 2026年9月 | 前月比 | 前年同月（2025年9月） | 前年同月比 |
+| --- | ---: | ---: | ---: | ---: |
+| X | 28,663 | +63 | 28,946 | -283 |
+| Instagram | 24,235 | +484 | 19,883 | +4,352 |
+| YouTube | 19,713 | +30 | 19,372 | +341 |
+| LINE | 24,095 | +75 | 22,994 | +1,101 |
+
+Facebook は月次報告書に載っていない（2025年3月度の報告書では 16,292）。
+
+### 2026年度の推移（月次報告書より）
+
+| SNS | 4月 | 5月 | 6月 | 7月 | 8月 | 9月 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| X | 28,868 | 28,752 | 28,694 | 28,655 | 28,600 | 28,663 |
+| Instagram | 22,125 | 22,494 | 22,678 | 23,210 | 23,751 | 24,235 |
+| YouTube | 19,479 | 19,541 | 19,541 | 19,629 | 19,683 | 19,713 |
+| LINE | 23,752 | 23,831 | 23,866 | 23,939 | 24,020 | 24,095 |
+
+## 参考: Web検索で拾った数値（2026-10-06〜07 取得）
+
+検索エンジンに残っていた値で、取得時点が不明。公式値と食い違う場合は公式値を優先。
 
 | SNS | アカウント | 数値 | 備考 |
 | --- | --- | --- | --- |
-| X | [@victas_inc](https://x.com/victas_inc) | フォロワー 約28.6K | |
-| Instagram（海外） | [@victas_tabletennis](https://www.instagram.com/victas_tabletennis/) | フォロワー 約14K / フォロー中 68 / 投稿 214 | |
-| Facebook（欧州） | [VICTAS Table Tennis](https://www.facebook.com/victas.tabletennis/) | フォロワー 6,551 / いいね 4,171 | 欧州代理店（独ブレーメン）運営 |
-| Facebook（仏） | [VICTAS Tennis de Table](https://www.facebook.com/victas.france/) | フォロワー 約2K / いいね 2,027 | |
-| Instagram（国内） | @victas.inc（ハンドル未確認） | 未取得 | 検索で該当アカウントが見つからず |
-| YouTube | [@VICTAS-Inc](https://www.youtube.com/@VICTAS-Inc) | 登録者 約19.7K | 10/7 に検索結果から追記 |
-| LINE | [公式アカウント](https://page.line.me/xyi8247i) | 未取得 | |
-| TikTok | — | — | 公式アカウントは確認できず（VICTASは偽アカウントへの注意喚起を出している） |
+| X | [@victas_inc](https://x.com/victas_inc) | 約28.6K | 公式値とほぼ一致 |
+| YouTube | [@VICTAS-Inc](https://www.youtube.com/@VICTAS-Inc) | 約19.7K | 公式値とほぼ一致 |
+| Instagram（海外） | [@victas_tabletennis](https://www.instagram.com/victas_tabletennis/) | 約14K | 月次報告書の Instagram（国内）とは別アカウント |
+| Facebook（欧州） | [VICTAS Table Tennis](https://www.facebook.com/victas.tabletennis/) | 6,551 | 欧州代理店運営 |
+| Facebook（仏） | [VICTAS Tennis de Table](https://www.facebook.com/victas.france/) | 約2K | |
+| TikTok | — | — | 公式アカウントは確認できず |
